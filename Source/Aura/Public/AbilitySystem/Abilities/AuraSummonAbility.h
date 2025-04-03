@@ -18,12 +18,15 @@ class AURA_API UAuraSummonAbility : public UAuraGameplayAbility
 
 	UFUNCTION(BlueprintCallable)
 	TArray<FVector> GetSpawnLocations();
+	
+	UFUNCTION(BlueprintPure, Category = "Summoning")
+	TSubclassOf<APawn> GetRandomMinionClass();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
 	int32 NumMinions = 5;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
-	TArray<TSubclassOf<APawn>> SpawnedActors;
+	TArray<TSubclassOf<APawn>> MinionClasses;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
 	float MinSpawnDistance = 150.f;
@@ -33,5 +36,6 @@ class AURA_API UAuraSummonAbility : public UAuraGameplayAbility
 
 	UPROPERTY(EditDefaultsOnly, Category = "Summoning")
 	float SpawnSpread = 90.f;
+
 	
 };

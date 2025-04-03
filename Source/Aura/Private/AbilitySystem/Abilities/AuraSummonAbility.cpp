@@ -3,8 +3,6 @@
 
 #include "AbilitySystem/Abilities/AuraSummonAbility.h"
 
-#include "Kismet/KismetSystemLibrary.h"
-
 TArray<FVector> UAuraSummonAbility::GetSpawnLocations()
 {
 	const FVector Forward = GetAvatarActorFromActorInfo()->GetActorForwardVector();
@@ -17,23 +15,23 @@ TArray<FVector> UAuraSummonAbility::GetSpawnLocations()
 	for (int32 i = 0; i < NumMinions; i++)
 	{
 		const FVector Direction = LeftOfSpread.RotateAngleAxis(DeltaSpread*i, FVector::UpVector);
-		const FVector ChosenSpawnLocation = Location + Direction * FMath::FRandRange(MinSpawnDistance, MaxSpawnDistance); // Picks random location within our Spwan area on this specific angle
+		FVector ChosenSpawnLocation = Location + Direction * FMath::FRandRange(MinSpawnDistance, MaxSpawnDistance); // Picks random location within our Spwan area on this specific angle
+
+		//Line trace to ensure that the enemies spawn on the ground (in case of uneven local terrain)
+		FHitResult Hit;
+		GetWorld()->LineTraceSingleByChannel(Hit, ChosenSpawnLocation + FVector(0.f,0.f, 400.f), ChosenSpawnLocation - FVector(0.f,0.f, 400.f), ECC_Visibility);
+		if (Hit.bBlockingHit)
+		{
+			ChosenSpawnLocation = Hit.ImpactPoint;
+		}
 		SpawnLocations.Add(ChosenSpawnLocation);
-		DrawDebugSphere(GetWorld(), ChosenSpawnLocation, 18, 12, FColor::Cyan, false, 3.f);
-
-		UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Location, Location + Direction * MaxSpawnDistance, 4.f, FLinearColor::Green, 3.f);
-
-		DrawDebugSphere(GetWorld(), Location + Direction * MinSpawnDistance, 5, 12, FColor::Red, false, 3.f);
-		DrawDebugSphere(GetWorld(), Location + Direction * MaxSpawnDistance, 5, 12, FColor::Red, false, 3.f);
 	}
 	
-	//UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Location, Location + RightOfSpread * MaxSpawnDistance, 4.f, FLinearColor::Green, 3.f);
-	//DrawDebugSphere(GetWorld(), Location + RightOfSpread * MinSpawnDistance, 15, 12, FColor::Red, false, 3.f);
-	//DrawDebugSphere(GetWorld(), Location + RightOfSpread * MaxSpawnDistance, 15, 12, FColor::Red, false, 3.f);
-	
-	//UKismetSystemLibrary::DrawDebugArrow(GetAvatarActorFromActorInfo(), Location, Location + LeftOfSpread * MaxSpawnDistance, 4.f, FLinearColor::Gray, 3.f);
-	//DrawDebugSphere(GetWorld(), Location + LeftOfSpread * MinSpawnDistance, 15, 12, FColor::Red, false, 3.f);
-	//DrawDebugSphere(GetWorld(), Location + LeftOfSpread * MaxSpawnDistance, 15, 12, FColor::Red, false, 3.f);
-	
 	return SpawnLocations;
+}
+
+TSubclassOf<APawn> UAuraSummonAbility::GetRandomMinionClass()
+{
+	const int32 Selection = FMath::RandRange(0, MinionClasses.Num() - 1);
+	return MinionClasses[Selection];
 }
