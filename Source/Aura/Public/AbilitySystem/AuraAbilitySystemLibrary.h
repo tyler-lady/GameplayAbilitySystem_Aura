@@ -54,4 +54,6 @@ public:
 	/** Faction */
 	UFUNCTION(BlueprintPure, Category="AuraAbilitySystemLibrary|Gameplay Mechanics")
 	static bool IsNotFriend(AActor* FirstActor, AActor* SecondActor);
+
+	static int32 GetXPRewardForCharacterClassAndLevel(const UObject* WorldContextObject, ECharacterClass CharacterClass, int32 CharacterLevel);
 };
