@@ -193,10 +193,9 @@ void UAuraAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 
 void UAuraAttributeSet::SendXPEvent(const FEffectProperties& Props) const
 {
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor);
-	if(CombatInterface)
+	if(Props.TargetAvatarActor->Implements<UCombatInterface>())
 	{
-		const int32 TargetLevel = CombatInterface->GetPlayerLevel();
+		const int32 TargetLevel = ICombatInterface::Execute_GetPlayerLevel(Props.TargetAvatarActor);
 		const ECharacterClass TargetClass = ICombatInterface::Execute_GetCharacterClass(Props.TargetAvatarActor);
 
 		const int32 XPReward = UAuraAbilitySystemLibrary::GetXPRewardForCharacterClassAndLevel(Props.TargetAvatarActor, TargetClass, TargetLevel);
