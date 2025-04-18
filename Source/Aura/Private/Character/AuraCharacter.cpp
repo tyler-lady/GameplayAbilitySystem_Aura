@@ -5,6 +5,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
+#include "Aura/AuraLogChannels.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
@@ -39,6 +40,13 @@ void AAuraCharacter::OnRep_PlayerState()
 
 	// Init ability actor info for the Client
 	InitAbilityActorInfo();
+}
+
+void AAuraCharacter::AddToXP_Implementation(int32 InXP)
+{
+	AAuraPlayerState* AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState);
+	AuraPlayerState->AddToXP(InXP);
 }
 
 int32 AAuraCharacter::GetPlayerLevel()
