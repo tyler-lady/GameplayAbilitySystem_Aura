@@ -2,7 +2,6 @@
 
 
 #include "Character/AuraCharacter.h"
-
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/AuraAbilitySystemComponent.h"
 #include "AbilitySystem/Data/LevelUpInfo.h"
@@ -11,9 +10,14 @@
 #include "Player/AuraPlayerController.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
+#include "NiagaraComponent.h"
 
 AAuraCharacter::AAuraCharacter()
 {
+	LevelUpNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>("LevelUpNiagaraComponent");
+	LevelUpNiagaraComponent->SetupAttachment(GetRootComponent());
+	LevelUpNiagaraComponent->bAutoActivate = false;
+	
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
@@ -59,7 +63,12 @@ int32 AAuraCharacter::GetXP_Implementation() const
 
 void AAuraCharacter::LevelUp_Implementation()
 {
+	Multicast_LevelUpParticles();
+}
 
+void AAuraCharacter::Multicast_LevelUpParticles_Implementation() const
+{
+	if (IsValid(LevelUpNiagaraComponent)) LevelUpNiagaraComponent->Activate(true);
 }
 
 int32 AAuraCharacter::FindLevelForXP_Implementation(int32 InXP) const
@@ -128,3 +137,5 @@ void AAuraCharacter::InitAbilityActorInfo()
 	}
 	InitializeDefaultAttributes();
 }
+
+
