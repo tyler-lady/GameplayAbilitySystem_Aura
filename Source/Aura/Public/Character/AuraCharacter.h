@@ -1,4 +1,4 @@
-// Copyright Druid Mechanics
+// Copyright Tyler Lady
 
 #pragma once
 
@@ -8,6 +8,8 @@
 #include "AuraCharacter.generated.h"
 
 class UNiagaraComponent;
+class UCameraComponent;
+class USpringArmComponent;
 
 /**
  * 
@@ -41,6 +43,13 @@ public:
 	TObjectPtr<UNiagaraComponent> LevelUpNiagaraComponent;
 	
 private:
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UCameraComponent> TopDownCameraComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USpringArmComponent> CameraBoom;
+	
 	virtual void InitAbilityActorInfo() override;
 
 	UFUNCTION(NetMulticast, reliable)
