@@ -83,6 +83,8 @@ public:
 
 	FGameplayTag Abilities_Fire_Firebolt;
 
+	FGameplayTag Abilities_Lightning_Electrocute;
+
 	/*
 	 * Ability Statuses
 	 */
